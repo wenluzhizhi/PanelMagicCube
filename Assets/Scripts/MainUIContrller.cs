@@ -31,6 +31,7 @@ public class MainUIContrller : MonoBehaviour
 	public Text currentDifficult;
 
 	public AudioSource adu1;
+	public AudioSource takePhotoSound;
 
 	public RawImage VideoTexture;
 
@@ -198,6 +199,7 @@ public class MainUIContrller : MonoBehaviour
 			texture.SetPixels (webCamtex.GetPixels ());
 			texture.Apply ();      
 			RawShowImage.texture = texture;
+			takePhotoSound.Play ();
 		}
 	}
 
