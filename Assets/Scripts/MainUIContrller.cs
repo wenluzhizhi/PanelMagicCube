@@ -4,6 +4,11 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using DG.Tweening;
 
+public enum GameState{
+	Slice,StartGame,None,
+}
+
+
 public class MainUIContrller : MonoBehaviour
 {
 
@@ -34,6 +39,9 @@ public class MainUIContrller : MonoBehaviour
 	public AudioSource takePhotoSound;
 
 	public RawImage VideoTexture;
+
+
+	public GameState gameState = GameState.None;
 
 	#region sigleton
 	private static MainUIContrller _instance;
@@ -76,6 +84,11 @@ public class MainUIContrller : MonoBehaviour
 	public List<int> randomList=new List<int>();
 	public void OnClickStartGame()
 	{
+		if (gameState != GameState.Slice) {
+			Debug.Log ("请先切图。。。"+Time.time);
+			TipManager.Instance.show ("请先切图");
+			return;
+		}
 		SuccessPanel.gameObject.SetActive (false);
 		Debug.Log ("开始游戏----"+Time.time);
 		int _max = Columns * Rows;
@@ -103,6 +116,7 @@ public class MainUIContrller : MonoBehaviour
 				Debug.Log ("i=========="+i);
 			}
 		}
+		gameState = GameState.StartGame;
 	}
 
 	public void OnClickSlicePic()
@@ -118,6 +132,7 @@ public class MainUIContrller : MonoBehaviour
 		}
 		RawShowImage.enabled = false;
 		SuccessPanel.gameObject.SetActive (false);
+		gameState = GameState.Slice;
 	}
 
 
@@ -131,6 +146,7 @@ public class MainUIContrller : MonoBehaviour
 		RawShowImage.enabled = true;
 		RawShowImage.texture=BigIamges[CurrentShowIndex];
 		grid.gameObject.SetActive (false);
+		gameState = GameState.None;
 	}
 
 
@@ -201,6 +217,10 @@ public class MainUIContrller : MonoBehaviour
 			RawShowImage.texture = texture;
 			takePhotoSound.Play ();
 		}
+	}
+
+	public void OnClickExit(){
+		Application.Quit ();
 	}
 
 	#endregion
@@ -347,10 +367,11 @@ public class MainUIContrller : MonoBehaviour
 		totalItem = listItems.Count;
 		float _score = (float)successItem / (float)totalItem;
 		_score = Mathf.RoundToInt (_score * 100) / 100.0f;
-		scoreSlider.value = _score;
+		scoreSlider.value = _score * (scoreSlider.maxValue - scoreSlider.minValue);
 		scoreText.text=_score*100+"%";
 		if (_score >= 1.0f) {
-			SuccessPanel.gameObject.SetActive (true);
+			//SuccessPanel.gameObject.SetActive (true);
+			TipManager.Instance.show("恭喜！拼图完成！");
 		}
 		adu1.Play ();
 

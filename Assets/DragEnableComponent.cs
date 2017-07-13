@@ -110,6 +110,8 @@ namespace MySwing.Balance
 		//开始拖动时，应该记录当前位置，及层级关系
 		void IBeginDragHandler.OnBeginDrag (PointerEventData eventData)
 		{
+			if (MainUIContrller.Instance.gameState != GameState.StartGame)
+				return;
 			if (!isEnableDrag)
 				return;
 			this.parentRect = this.gameObject.transform.parent.GetComponent<RectTransform> ();
@@ -128,6 +130,8 @@ namespace MySwing.Balance
 
 		public void OnDrag (PointerEventData eventData)
 		{
+			if (MainUIContrller.Instance.gameState != GameState.StartGame)
+			return;
 			if (!isEnableDrag)
 				return;
 			SetDraggedPosition (eventData);
@@ -138,6 +142,8 @@ namespace MySwing.Balance
 
 		void IEndDragHandler.OnEndDrag (PointerEventData eventData)
 		{
+			if (MainUIContrller.Instance.gameState != GameState.StartGame)
+				return;
 			if (!isEnableDrag)
 				return;
 			isEnableDrag = false;
