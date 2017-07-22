@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using DG.Tweening;
+using System.IO;
 
 public enum GameState{
 	Slice,StartGame,None,
@@ -27,6 +28,8 @@ public class MainUIContrller : MonoBehaviour
 	public RectTransform SetingPanel;
 	public RectTransform ViewRawPicPanel;
 	public RectTransform CameraPanel;
+	public RectTransform OpenFileDialog;
+	public RectTransform OpneImageDialog;
 
 	public List<RawImage> listItems=new List<RawImage>();
 	public List<Texture> listTextures=new List<Texture>();
@@ -207,6 +210,22 @@ public class MainUIContrller : MonoBehaviour
 		}
 
 	}
+
+
+	Texture2D textureFromFile=null;
+	public void SelectFilePic(string str){
+
+		if (textureFromFile != null)
+			DestroyImmediate (textureFromFile);
+		byte[] bys =File.ReadAllBytes (str);
+		textureFromFile = new Texture2D (300,300); 
+		textureFromFile.LoadImage (bys);
+		textureFromFile.Apply ();
+		RawShowImage.texture = textureFromFile;
+		takePhotoSound.Play ();
+	}
+
+
 	public void OnClickTakePhoto(){
 		if(webCamtex!=null)
 		{
@@ -221,6 +240,54 @@ public class MainUIContrller : MonoBehaviour
 
 	public void OnClickExit(){
 		Application.Quit ();
+	}
+
+
+	public void OnClickOpenFile()
+	{
+		
+		if (!OpenFileDialog.gameObject.activeInHierarchy) 
+		{
+			OpenFileDialog.gameObject.SetActive (true);
+			OpenFileDialog.localScale = new Vector3 (1f, 0f, 1f);
+			OpenFileDialog.DOScaleY (1.0f, 0.5f);
+	
+
+		} 
+		else
+		{
+			
+			OpenFileDialog.DOScaleY (0.0f, 0.5f).OnComplete(delegate {
+				OpenFileDialog.gameObject.SetActive (false);
+			});
+		}
+
+
+	}
+	public void OnClickOpenImageDialog()
+	{
+
+		if (!OpneImageDialog.gameObject.activeInHierarchy) 
+		{
+			OpneImageDialog.gameObject.SetActive (true);
+			OpneImageDialog.localScale = new Vector3 (1f, 0f, 1f);
+			OpneImageDialog.DOScaleY (1.0f, 0.5f);
+
+
+		} 
+		else
+		{
+
+			OpneImageDialog.DOScaleY (0.0f, 0.5f).OnComplete(delegate {
+				OpneImageDialog.gameObject.SetActive (false);
+			});
+		}
+
+
+	}
+
+	public void showLog222(){
+		ShowLogConsole.visible = !ShowLogConsole.visible;
 	}
 
 	#endregion
